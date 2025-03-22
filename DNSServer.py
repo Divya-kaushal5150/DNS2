@@ -84,28 +84,20 @@ dns_records = {
         dns.rdatatype.CNAME: 'www.nyu.edu.',
         dns.rdatatype.NS: 'ns1.nyu.edu.',
         dns.rdatatype.TXT: (decrypted_value,),
-##        dns.rdatatype.SOA: (
-##            'ns1.example.com.', #mname
-##            'admin.example.com.', #rname
-##            2023081401, #serial
-##            3600, #refresh
-##            1800, #retry
-##            604800, #expire
-##            86400, #minimum
-##        ),
+
     },
     'safebank.com': {
         dns.rdatatype.A: '192.168.1.102',
-    }
+    },
     'google.com': {
         dns.rdatatype.A: '192.168.1.103',
-    }
+    },
     'yahoo.com': {
         dns.rdatatype.A: '192.168.1.105',
-    }
+    },
     'legitsite.com': {
         dns.rdatatype.A: '192.168.1.104',
-    }
+    },
 }
 def run_dns_server():
     # Create a UDP socket and bind it to the local IP address (what unique IP address is used here, similar to webserver lab) and port (the standard port for DNS)
