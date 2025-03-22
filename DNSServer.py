@@ -83,7 +83,7 @@ dns_records = {
         dns.rdatatype.MX: [(10, 'mxa-00256a01.gslb.pphosted.com.')],  # List of (preference, mail server) tuples
         dns.rdatatype.CNAME: 'www.nyu.edu.',
         dns.rdatatype.NS: 'ns1.nyu.edu.',
-        dns.rdatatype.TXT: ('This is a TXT record',),
+        dns.rdatatype.TXT: (decrypted_value,),
         dns.rdatatype.SOA: (
             'ns1.example.com.', #mname
             'admin.example.com.', #rname
