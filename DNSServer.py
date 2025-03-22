@@ -19,8 +19,6 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import base64
 import ast
 
-
-
 def format_txt_data(data):
 
     #This function ensures that the provided data is in the correct format for a DNS TXT record.
@@ -44,24 +42,6 @@ def format_txt_data(data):
             formatted_data.append(item)
 
     return formatted_data
-
-def create_dns_txt_record(data):
-    
-    #Create a DNS TXT record from the provided data.
-   
-    formatted_data = format_txt_data(data)
-    rdata_list = [dns.rdata.from_text(dns.rdataclass.IN, dns.rdatatype.TXT, txt) for txt in formatted_data]
-    return rdata_list
-
-# Example usage
-decrypted_value = "This is a long decrypted value that might exceed the limit of 255 characters, so we need to split it accordingly into multiple chunks of 255 characters each. This ensures that we don't exceed the maximum allowed length for a TXT record in DNS."
-
-# Creating the TXT record from the decrypted value
-txt_record = create_dns_txt_record(decrypted_value)
-
-# Print the formatted TXT record
-for record in txt_record:
-    print(record)
 
 def generate_aes_key(password, salt):
     kdf = PBKDF2HMAC(
