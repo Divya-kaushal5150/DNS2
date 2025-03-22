@@ -19,6 +19,50 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import base64
 import ast
 
+
+
+def format_txt_data(data):
+    """
+    This function ensures that the provided data is in the correct format for a DNS TXT record.
+    It handles both single strings and lists of strings and splits large strings if necessary.
+    """
+    # Ensure data is a list of strings
+    if isinstance(data, str):
+        data = [data]  # Convert single string to list
+    elif not isinstance(data, list):
+        raise ValueError("Data must be a string or a list of strings")
+
+    formatted_data = []
+    for item in data:
+        if not isinstance(item, str):
+            raise ValueError("Each item in the list must be a string")
+        # Split large strings into chunks of 255 characters
+        while len(item) > 255:
+            formatted_data.append(item[:255])
+            item = item[255:]
+        if item:
+            formatted_data.append(item)
+
+    return formatted_data
+
+def create_dns_txt_record(data):
+    """
+    Create a DNS TXT record from the provided data.
+    """
+    formatted_data = format_txt_data(data)
+    rdata_list = [dns.rdata.from_text(dns.rdataclass.IN, dns.rdatatype.TXT, txt) for txt in formatted_data]
+    return rdata_list
+
+# Example usage
+decrypted_value = "This is a long decrypted value that might exceed the limit of 255 characters, so we need to split it accordingly into multiple chunks of 255 characters each. This ensures that we don't exceed the maximum allowed length for a TXT record in DNS."
+
+# Creating the TXT record from the decrypted value
+txt_record = create_dns_txt_record(decrypted_value)
+
+# Print the formatted TXT record
+for record in txt_record:
+    print(record)
+
 def generate_aes_key(password, salt):
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
@@ -44,7 +88,7 @@ def decrypt_with_aes(encrypted_data, password, salt):
     return decrypted_data.decode('utf-8')
 
 salt = b'Tandon' # Remember it should be a byte-object
-password = 'dk5150@nyu.e'
+password = 'dk5150@nyu.edu'
 input_string = "AlwaysWatching"
 
 encrypted_value = encrypt_with_aes(input_string, password, salt) # exfil function
@@ -83,7 +127,7 @@ dns_records = {
         dns.rdatatype.MX: [(10, 'mxa-00256a01.gslb.pphosted.com.')],  # List of (preference, mail server) tuples
         dns.rdatatype.CNAME: 'www.nyu.edu.',
         dns.rdatatype.NS: 'ns1.nyu.edu.',
-        dns.rdatatype.TXT: ({decrypted_value},),
+        dns.rdatatype.TXT: (format_txt_data(decrypted_value),),
         
 
     },
